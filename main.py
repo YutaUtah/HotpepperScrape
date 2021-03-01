@@ -54,7 +54,7 @@ if __name__ == '__main__':
         list_shop_data = data.get_search_list()
 
         if i > data.get_page_number():
-            logging.warning('%s', 'Reached the End of the Page. Stopping it at Page {}'.format(data.get_page_number()))
+            logging.warning('%s', 'Reached the End of Search. Stopping it at Page {}'.format(data.get_page_number()))
             break
 
         for item in list_shop_data:
