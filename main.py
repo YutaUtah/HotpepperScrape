@@ -50,22 +50,24 @@ if __name__ == '__main__':
         # ページ一枚分のデータを取る
         crawling_URL = Consts.TARGET_URL.format(i)
         data = ScrapedData(crawling_URL)
-        logging.info('%s', 'Scraping {}'.format(crawling_URL))
         list_shop_data = data.get_search_list()
+        logging.info('%s', 'Scraping {}'.format(crawling_URL))
 
+        # 一番最後のページに到達したらスクリプトを止める
         if i > data.get_page_number():
             logging.warning('%s', 'Reached the End of Search. Stopping it at Page {}'.format(data.get_page_number()))
             break
 
         for item in list_shop_data:
+            # お店の名前とURLを抽出
             shop_name, shop_url = get_shopname_shop_url(item)
-
+            # お店の電話番号を抽出
             shop_data = ScrapedData(shop_url)
             phone_url = shop_data.get_phone_url()
-
             phone_data = ScrapedData(phone_url)
             phone_number = phone_data.get_phone_number()
 
+            #とった情報を格納
             dict['美容院'].append(shop_name)
             dict['URL'].append(shop_url)
             dict['電話番号'].append(phone_number)
@@ -74,12 +76,16 @@ if __name__ == '__main__':
         i += 1
 
 
+    # 辞書型に入れていたデータをデータフレームに変換
     dict_final = {}
+
     for k, v in dict.items():
         dict_final[k] = pd.Series(v)
 
     df = pd.DataFrame(dict_final)
     logging.info('%s', 'Exporting Excel File')
+
+    # CSVにエクスポート
     df.to_csv('hotpepper.csv')
     logging.info('%s', 'Successfully Exported!')
 
